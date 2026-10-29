@@ -110,8 +110,8 @@ function showLocResult(){lmsg('');$('#lin').hidden=true;
  <p style="line-height:1.7;margin:8px 0">この街は、物語では「<b>${REGION_NAME[LOC.region]}</b>」として始まります。<br>くわしい地図は、エンディングのあとで一緒に見られます。</p>
  <button class="btn" id="lgo" style="width:100%">この街で始める</button><button class="btn sub" id="lalt" style="width:100%">物語の街は、自分で選ぶ</button><button class="btn sub" id="lre" style="width:100%">場所を入れなおす</button>`;
  $('#lres').hidden=false;
- $('#lgo').onclick=()=>{begin($('#in').value.trim());st.region=LOC.region;play([...S.intro.slice(0,2),L('town','','{n}','私の街は、'+LOC.town+'のあたり。'),...S[LOC.region+'_intro']])};
- $('#lalt').onclick=()=>{begin($('#in').value.trim());play(S.intro)};
+ $('#lgo').onclick=()=>{$('#loc').hidden=true;begin($('#in').value.trim());st.region=LOC.region;play([...S.intro.slice(0,2),L('town','','{n}','私の街は、'+LOC.town+'のあたり。'),...S[LOC.region+'_intro']])};
+ $('#lalt').onclick=()=>{$('#loc').hidden=true;begin($('#in').value.trim());play(S.intro)};
  $('#lre').onclick=openLoc}
 $('#lg').onclick=openLoc;
 $('#lb').onclick=()=>{hide();$('#ti').hidden=false};
@@ -134,7 +134,7 @@ const _ending=ending;
 ending=function(t){_ending(t);if(!LOC)return;
  $('#en').insertAdjacentHTML('beforeend',`<div class="card home"><h3>あなたの本当の街</h3>${esc(LOC.town)}のあたりを、実際の地図で歩いてみよう。<button class="btn" id="lw" style="width:100%;margin-top:8px">あなたの街を歩く</button></div>`);
  $('#lw').onclick=walkHome};
-function walkHome(){const c=CHARS[st.who],n=st.aff[st.who]||0,bitter=n<(c.th||[6,3])[1];hide();
+function walkHome(){const c=CHARS[st.who],n=st.aff[st.who]||0,bitter=n<(c.th||[6,3])[1];hide();$('#en').hidden=true;
  buildHomeMap();
  play(bitter?[L('dusk','','','3日間は、あっという間に終わった。'),L('dusk','','{n}','…この街で見たものは、私が本当に暮らしている街にも、きっとある。',{map:'home'})]
   :[L('dusk',c.sym,c.name,ASK[st.who]||'今度は、{n}さんの街を案内してください。'),L('dusk','','','あなたの本当の街。今度の休みに、一緒に歩くとしたら？',{map:'home'})])}
@@ -177,5 +177,5 @@ function reveal(sel){hide();$('#box').hidden=true;$('#sp').innerHTML='';$('#bg')
  ${chosen.map(p=>`<div class="card"><h3>${p.g}　${esc(p.n)}</h3>${spotText(p)}</div>`).join('')}
  ${others.length?`<h3 style="margin:16px 0 0">ほかの場所</h3>`+others.map(p=>`<div class="card no"><h3>${p.g}　${esc(p.n)}</h3>${spotText(p)}</div>`).join(''):''}
  <div class="card"><h3>このメモについて</h3>国土地理院のハザードマップポータルサイトで公開されているデータ（洪水・高潮・津波は想定最大規模）から作っています。<b>色が付いていない場所が安全、という意味ではありません。</b>想定が作られていない川や、内水氾濫（下水があふれる浸水）は含まれていないことがあります。お住まいの市区町村のハザードマップと、<a href="https://disaportal.gsi.go.jp/" target="_blank" rel="noopener">重ねるハザードマップ</a>でも確かめて、実際に歩いてみよう。</div>
- <button class="btn" style="width:100%" onclick="$('#rs').click()">タイトルへ</button>`;
+ <button class="btn" style="width:100%" onclick="$('#lr').hidden=true;$('#rs').click()">タイトルへ</button>`;
  $('#lr').hidden=false;$('#lr').scrollTop=0}
