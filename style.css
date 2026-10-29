@@ -1,0 +1,51 @@
+@charset "utf-8";
+:root{--ink:#10283c;--sea:#2b6f8e;--sand:#f1e7d3;--pink:#e5637b;--go:#1c9a69;--box:rgba(12,30,46,.9);color-scheme:dark}
+html,body{height:100%;margin:0;background:var(--ink);color:var(--sand);font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Meiryo",sans-serif}
+[hidden]{display:none!important}
+#app{max-width:520px;height:100%;margin:auto;position:relative;overflow:hidden;user-select:none}
+#bg{position:absolute;inset:0;transition:background .5s}
+.apt{background:linear-gradient(#cfe3ee,#e9dcc4 58%,#8a8f94 58%)}
+.room{background:linear-gradient(#3a3550,#241f38)}
+.town{background:linear-gradient(#bfe0ee,#f3e6c8 55%,#c8b995 55%)}
+.sea{background:linear-gradient(#9fd0e6,#d9eef5 45%,#2b7d9e 45%,#1d5f80)}
+.dusk{background:linear-gradient(#f0a46a,#e8788a 45%,#3a4a78 45%,#22305a)}
+.hill{background:linear-gradient(#f6c98a,#f1e7d3 40%,#3b86a6 40%,#2b6f8e 62%,#6e9a5a 62%)}
+.mtn{background:linear-gradient(#cfe6ef,#e8efe0 42%,#7ea06a 42%,#4f7a48)}
+.alley{background:linear-gradient(#cfd8e0,#e6dccb 50%,#9a8f80 50%)}
+.night{background:#05070b}
+#hud{position:absolute;top:10px;left:12px;right:12px;display:flex;justify-content:space-between;font-size:15px;z-index:3;text-shadow:0 1px 4px #000a}
+#hud b{color:var(--pink);letter-spacing:2px;font-weight:700}
+#hud button{background:none;border:1px solid #fff6;color:#fff;border-radius:99px;padding:2px 12px;font:inherit;font-size:12px}
+#sp{position:absolute;left:0;right:0;bottom:176px;height:300px;display:flex;justify-content:center;gap:10px;pointer-events:none}
+.c{position:relative;width:170px;height:300px;filter:brightness(.7);transition:filter .2s}
+.c.on{filter:none}
+.c::before{content:"";position:absolute;left:43px;top:10px;width:84px;height:92px;border-radius:50% 50% 46% 46%;background:linear-gradient(var(--hair) 40%,#f6dcc4 40%)}
+.c::after{content:"";position:absolute;left:14px;top:108px;width:142px;height:192px;border-radius:64px 64px 0 0;background:var(--coat)}
+.two .c{width:140px;margin:0 -10px}
+#box{position:absolute;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));min-height:150px;background:var(--box);border-radius:18px;padding:16px 18px 20px;box-sizing:border-box;cursor:pointer;z-index:2}
+#nm{display:inline-block;padding:1px 14px;border-radius:99px;font-size:13px;font-weight:700;margin-bottom:6px;background:#fff3;color:#fff}
+#tx{font-size:16.5px;line-height:1.85;font-weight:500}
+#nx{position:absolute;right:16px;bottom:8px;font-size:11px;opacity:.6}
+#ch{position:absolute;left:18px;right:18px;top:30%;display:flex;flex-direction:column;gap:10px;z-index:4}
+#ch button,.btn{background:var(--sand);color:var(--ink);border:0;border-radius:14px;padding:13px 16px;font:inherit;font-size:15px;font-weight:700;text-align:left;box-shadow:0 3px 0 #0006;cursor:pointer}
+#ch button.off{opacity:.45}
+.btn{text-align:center;background:var(--pink);color:#fff}.btn:disabled{opacity:.4}
+button:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.scr{position:absolute;inset:0;z-index:5;background:var(--ink);overflow:auto;padding:28px 20px;box-sizing:border-box}
+#ti{display:flex;flex-direction:column;justify-content:center;gap:16px;background:linear-gradient(#1b4a68,#10283c 70%)}
+#ti h1{font-size:34px;line-height:1.3;margin:0}
+#ti p{margin:0;opacity:.8;font-size:14px;line-height:1.7}
+#ti input{font:inherit;font-size:18px;padding:12px 14px;border-radius:12px;border:2px solid var(--sea);background:#0d2132;color:var(--sand)}
+#map svg{width:100%;max-height:60vh;border-radius:16px;display:block;margin:10px 0}
+#map .sp{cursor:pointer}
+#map .sp circle{fill:#fff;stroke:#6b8896;stroke-width:2}
+#map .sp.s circle,#map .sp.s rect{stroke:var(--pink);stroke-width:5}
+#map text{font-family:inherit;fill:var(--ink);font-weight:700}
+.hint{background:#fff1;border-left:4px solid var(--pink);padding:8px 12px;border-radius:6px;font-size:14px;line-height:1.7}
+.card{background:#fff1;border-radius:14px;padding:12px 14px;margin:10px 0;line-height:1.75;font-size:14.5px}
+.card h3{margin:0 0 4px;font-size:15px;color:#7fe0b4}.card.no{opacity:.55}
+.toast{position:absolute;top:50px;left:50%;transform:translateX(-50%);background:#000c;padding:8px 16px;border-radius:99px;font-size:13px;z-index:9}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/* 立ち絵画像を指定したキャラ（characters.js の img）はシルエットを消して画像表示 */
+.c.img{background-repeat:no-repeat;background-position:center bottom;background-size:contain}
+.c.img::before,.c.img::after{display:none}
