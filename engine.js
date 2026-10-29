@@ -18,15 +18,23 @@ const hh=(h,w)=>typeof h=='number'?add(h,w):Object.entries(h).forEach(([k,v])=>a
 const nameColor=sp=>{if(sp=='{n}')return '#c04a62';const c=Object.values(CHARS).find(c=>c.name==sp);return c?c.color:'#fff3'};
 const pickList=r=>Object.entries(CHARS).filter(([id,c])=>!r||r===1||c.region===r).map(([id,c])=>[c.full+(c.blurb?'　'+c.blurb:'')+(c.ready?'':'（準備中）'),c.ready?()=>startRoute(id):null]);
 function startRoute(id){st.who=id;hearts();play(S[CHARS[id].start])}
-// 立ち絵：characters.js の img が文字列なら全表情共通、{normal:'…',smile:'…'} なら表情ごと。img がなければ art.js の仮の絵
-const pic=(c,f)=>!c.img?null:typeof c.img=='string'?c.img:(c.img[f]||c.img.normal||null);
+// 立ち絵：img/ フォルダに「キャラID_表情.png」（例 img/wataru_smile.png）を置くと、その画像が使われる。
+//   画像がない表情は「キャラID_normal.png」、それもなければ art.js の仮の絵になる。
+//   characters.js で img:'パス' や img:{normal:'…',smile:'…'} を指定すると、そちらが優先される。
+//   最初に画像があるかどうかを確かめて（IMG_OK）、あるものだけを使う。
+const IMG_OK={};
+const imgPath=(c,f)=>!c.img?`img/${c.id}_${f}.png`:typeof c.img=='string'?c.img:(c.img[f]||null);
+const pic=(c,f)=>[imgPath(c,f),imgPath(c,'normal')].find(p=>p&&IMG_OK[p])||null;
+function probeImages(){Object.values(CHARS).forEach(c=>(typeof ART_FACES!='undefined'?ART_FACES:['normal','smile','shy','trouble']).forEach(f=>{const p=imgPath(c,f);if(!p||p in IMG_OK)return;IMG_OK[p]=false;
+ const im=new Image();im.onload=()=>{IMG_OK[p]=true;if(steps[i]&&!$('#box').hidden)sprites(steps[i])};im.src=p}))}
 function play(a){steps=a;i=0;draw()}
 function go(t){const r=typeof t=='function'?t(st):t;if(typeof r=='string')play(S[r]);else if(Array.isArray(r))play(r)}
 
+function sprites(s){$('#sp').innerHTML=[...s.c].map(k=>{const c=BY[k];if(!c)return '';const on=c.name==s.sp||(s.sp=='？？'&&s.c.length==1),f=on&&s.f||'normal',im=pic(c,f);
+  return `<div class="c ${on||s.sp=='？？'?'on':''} ${im?'img':''} ${!im&&typeof artSVG=='function'?'art':''}" style="--hair:${c.hair};--coat:${c.coat};${im?`background-image:url(${im})`:''}">${!im&&typeof artSVG=='function'?artSVG(c.id,f):''}</div>`}).join('');}
 function draw(){const s=steps[i];if(s.h)hh(s.h,s.why);if(s.set)Object.assign(st.flags,s.set);
  $('#bg').className=s.bg;$('#sp').className=s.c.length>1?'two':'';
- $('#sp').innerHTML=[...s.c].map(k=>{const c=BY[k];if(!c)return '';const on=c.name==s.sp||(s.sp=='？？'&&s.c.length==1),f=on&&s.f||'normal',im=pic(c,f);
-  return `<div class="c ${on||s.sp=='？？'?'on':''} ${im?'img':''} ${!im&&typeof artSVG=='function'?'art':''}" style="--hair:${c.hair};--coat:${c.coat};${im?`background-image:url(${im})`:''}">${!im&&typeof artSVG=='function'?artSVG(c.id,f):''}</div>`}).join('');
+ sprites(s);
  const n=$('#nm');n.textContent=T(s.sp);n.hidden=!s.sp;n.style.background=nameColor(s.sp);
  $('#tx').textContent=T(s.t);$('#box').hidden=false;
  const list=s.pick?pickList(s.pick):s.ch,ch=$('#ch');ch.innerHTML='';$('#nx').hidden=!!list;
@@ -63,5 +71,5 @@ function begin(n){st.name=(n||'ハル').replace(/[<>&"']/g,'');st.who=null;st.af
 $('#go').onclick=()=>{begin($('#in').value.trim());play(S.intro)};
 $('#rs').onclick=()=>{$('#hud').hidden=true;$('#box').hidden=true;$('#ch').innerHTML='';$('#sp').innerHTML='';hide();$('#ti').hidden=false};
 // 開発用ジャンプ：…/index.html#ao のように「#キャラID」を付けて開くと、そのルートの最初から始まる（ローカルでは #ao/ao_d のようにシーンIDも指定できる）
-function start(){const v=$('#ver');if(v&&typeof VERSION!='undefined')v.textContent='v'+VERSION.no+'　'+VERSION.name+'（'+VERSION.date+'）';
+function start(){probeImages();const v=$('#ver');if(v&&typeof VERSION!='undefined')v.textContent='v'+VERSION.no+'　'+VERSION.name+'（'+VERSION.date+'）';
  const[w,sc]=location.hash.slice(1).split('/');if(CHARS[w]){begin('ハル');st.who=w;hearts();play(S[sc]||S[CHARS[w].start])}}
