@@ -63,14 +63,17 @@ async function analyze(lat,lon,label){
  if(dem)for(let y=30;y<VH-40;y+=10)for(let x=30;x<VW-30;x+=10){if(Math.hypot(x-HX,y-HY)<50)continue;const e=demAt(dem,x,y);if(e==null)continue;if(!hi||e>hi[2])hi=[x,y,e];if(!lo||e<lo[2])lo=[x,y,e]}
  // 地図ミニゲームの候補地
  const sp=LOC.spots;
- evac.slice(0,3).forEach((e,i)=>sp.push({id:'ev'+i,kind:'evac',x:e.x,y:e.y,g:'避',n:short(e.name),full:e.name,types:e.types}));
+ // 地図の中の避難場所を近い順に3つまで。2つに満たなければ、地図の外のいちばん近いものを、その方向の地図の端に置く
+ const inE=evac.filter(e=>e.inside).slice(0,3),outE=evac.filter(e=>!e.inside).slice(0,Math.max(0,2-inE.length));
+ outE.forEach(e=>{const a=Math.atan2(e.y-HY,e.x-HX),k=Math.min((HX-30)/Math.abs(Math.cos(a)||1e-9),(HY-46)/Math.abs(Math.sin(a)||1e-9));e.x=HX+Math.cos(a)*k;e.y=HY+Math.sin(a)*k;e.edge=1});
+ [...inE,...outE].forEach((e,i)=>sp.push({id:'ev'+i,kind:'evac',x:e.x,y:e.y,g:'避',n:short(e.name),full:e.name,types:e.types,dist:e.d,edge:e.edge}));
  if(hi&&LOC.elev!=null&&hi[2]-LOC.elev>=2)sp.push({id:'hi',kind:'high',x:hi[0],y:hi[1],g:'高',n:'小高い所',e:hi[2]});
  if(lo&&LOC.elev!=null&&LOC.elev-lo[2]>=1)sp.push({id:'lo',kind:'low',x:lo[0],y:lo[1],g:'低',n:'低い所',e:lo[2]});
  const w=['tsunami','tide','flood'].find(k=>LOC.hz[k].best);
  if(w){const b=LOC.hz[w].best;sp.push({id:'wa',kind:'water',layer:w,x:b[0],y:b[1],g:'水',n:w=='flood'?'川に近い所':'海に近い所',c:b[2]})}
  const ds=['dosha1','dosha2','dosha3'].filter(k=>LOC.hz[k].best).sort((a,b)=>Math.hypot(LOC.hz[a].best[0]-HX,LOC.hz[a].best[1]-HY)-Math.hypot(LOC.hz[b].best[0]-HX,LOC.hz[b].best[1]-HY))[0];
  if(ds){const b=LOC.hz[ds].best;sp.push({id:'ds',kind:'dosha',layer:ds,x:b[0],y:b[1],g:'坂',n:'山すその道',c:b[2]})}
-sp.forEach(p=>{p.dist=dist(p.x,p.y);if(dem&&p.e==null)p.e=demAt(dem,p.x,p.y)});
+sp.forEach(p=>{if(p.dist==null)p.dist=dist(p.x,p.y);if(dem&&p.e==null)p.e=demAt(dem,p.x,p.y)});
  spread(sp);
  decide();return LOC}
 
@@ -78,13 +81,13 @@ sp.forEach(p=>{p.dist=dist(p.x,p.y);if(dem&&p.e==null)p.e=demAt(dem,p.x,p.y)});
 async function readEvac(){const z=10,seen={},out=[];if(!LOC)return out;
  const ts=tiles(z);await Promise.all([1,2,3,4,5,6].flatMap(k=>ts.map(async t=>{try{const r=await fetch(fill(GSI.skhb,{k,z,x:t.x,y:t.y}));if(!r.ok)return;const j=await r.json();
   (j.features||[]).forEach(f=>{const[lon,lat]=f.geometry.coordinates,p=f.properties||{},key=p.name+lat.toFixed(5);if(seen[key])return;
-   const [x,y]=toView(lat,lon);if(x<28||x>VW-28||y<28||y>VH-44)return;seen[key]=1;
-   out.push({name:p.name||'避難場所',x,y,types:Object.keys(EVTYPE).filter(n=>p['disaster'+n]==1).map(n=>EVTYPE[n])})})}catch(e){}})));
+   const [x,y]=toView(lat,lon),d=Math.hypot(x-HX,y-HY)*mpp();if(d>2000)return;seen[key]=1;
+   out.push({name:p.name||'避難場所',x,y,d:Math.round(d/10)*10,inside:x>=28&&x<=VW-28&&y>=28&&y<=VH-44,types:Object.keys(EVTYPE).filter(n=>p['disaster'+n]==1).map(n=>EVTYPE[n])})})}catch(e){}})));
  return out.sort((a,b)=>Math.hypot(a.x-HX,a.y-HY)-Math.hypot(b.x-HX,b.y-HY))}
 const short=n=>{n=String(n).replace(/^.{1,6}?[都道府県市区町村]立/,'').replace(/（.*?）|\(.*?\)/g,'');return n.length>8?n.slice(0,7)+'…':n};
 // 候補地が重ならないように少しずらす
 function spread(A){for(let k=0;k<20;k++)A.forEach((a,i)=>A.forEach((b,j)=>{if(i>=j)return;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1;if(d<54){const m=(54-d)/2;a.x-=dx/d*m;a.y-=dy/d*m;b.x+=dx/d*m;b.y+=dy/d*m}}));
- A.forEach(p=>{p.x=Math.max(26,Math.min(VW-26,p.x));p.y=Math.max(26,Math.min(VH-48,p.y));if(Math.hypot(p.x-HX,p.y-HY)<44){const a=Math.atan2(p.y-HY,p.x-HX)||1;p.x=HX+Math.cos(a)*44;p.y=HY+Math.sin(a)*44}})}
+ A.forEach(p=>{p.x=Math.max(26,Math.min(VW-26,p.x));p.y=Math.max(26,Math.min(VH-48,p.y));if(Math.hypot(p.x-HX,p.y-HY)<60){const a=Math.atan2(p.y-HY,p.x-HX)||1;p.x=HX+Math.cos(a)*60;p.y=HY+Math.sin(a)*60}p.x=Math.max(40,Math.min(VW-40,p.x))})}
 
 // 地域の振り分け（ゲーム中は防災の説明をしないので、理由はやわらかい言い方にとどめる）
 function decide(){const h=LOC.hz,e=LOC.elev;
@@ -137,7 +140,7 @@ function walkHome(){const c=CHARS[st.who],n=st.aff[st.who]||0,bitter=n<(c.th||[6
   :[L('dusk',c.sym,c.name,ASK[st.who]||'今度は、{n}さんの街を案内してください。'),L('dusk','','','あなたの本当の街。今度の休みに、一緒に歩くとしたら？',{map:'home'})])}
 function tileImgs(url,op){return tiles(LZ).map(t=>`<image href="${fill(url,{z:LZ,x:t.x,y:t.y})}" x="${t.dx}" y="${t.dy}" width="${t.sz}" height="${t.sz}" ${op?`opacity="${op}"`:''} onerror="this.remove()"/>`).join('')}
 const credit=`<rect x="${VW-118}" y="${VH-18}" width="118" height="18" fill="#fffc"/><text x="${VW-6}" y="${VH-5}" text-anchor="end" font-size="10" style="font-weight:500">出典：国土地理院</text>`;
-ICON.home=p=>`<g class="hm"><circle cx="${p.x}" cy="${p.y}" r="17" fill="#e5637b" stroke="#fff" stroke-width="3"/><path d="M${p.x-8} ${p.y+1}l8-8 8 8v8h-16z" fill="#fff"/><text x="${p.x}" y="${p.y+32}" text-anchor="middle" font-size="12" style="paint-order:stroke;stroke:#fff;stroke-width:3">家</text></g>`;
+ICON.home=p=>`<g class="hm"><circle cx="${p.x}" cy="${p.y}" r="17" fill="#e5637b" stroke="#fff" stroke-width="3"/><path d="M${p.x-8} ${p.y+1}l8-8 8 8v8h-16z" fill="#fff"/></g>`;
 function buildHomeMap(){const sp=LOC.spots;
  MAPS.home={title:'あなたの街',intro:'今度の休みに、一緒に歩くとしたら？ 行ってみたい場所を'+Math.min(3,sp.length)+'つ選ぼう。',need:Math.min(3,sp.length)||1,
   ask:undefined,go:'この道順で歩く',
@@ -150,10 +153,10 @@ function buildHomeMap(){const sp=LOC.spots;
 // 振り返り：ハザードを重ねた地図と、選んだ場所のメモ
 function depthText(k,c){return c<0?null:LAYERS[k].leg[c][1]}
 function spotText(p){const e=p.e!=null?`標高 約${Math.round(p.e)}m。`:'';
- if(p.kind=='evac')return `${esc(p.full)}。${p.types.length?p.types.join('・')+'のときの':''}指定緊急避難場所です。家から約${p.dist}m。`;
+ if(p.kind=='evac')return `${esc(p.full)}。${p.types.length?p.types.join('・')+'のときの':''}指定緊急避難場所です。家から約${p.dist}m${p.edge?'（地図の外。マークの方向にあります）':''}。`;
  if(p.kind=='high')return `このあたりで高い場所（${e}家より約${Math.round(p.e-LOC.elev)}m高い）。水があふれたとき、高い所がどの方向にあるか知っておくと安心です。家から約${p.dist}m。`;
  if(p.kind=='low')return `このあたりで低い場所（${e}家より約${Math.round(LOC.elev-p.e)}m低い）。大雨のとき、水が集まりやすい場所です。家から約${p.dist}m。`;
- if(p.kind=='water')return `${LAYERS[p.layer].name}の想定で、${depthText(p.layer,p.c)}の浸水が見込まれている場所。${e}家から約${p.dist}m。`;
+ if(p.kind=='water')return `${LAYERS[p.layer].name}に、${depthText(p.layer,p.c)}の浸水が見込まれている場所。${e}家から約${p.dist}m。`;
  if(p.kind=='dosha')return `土砂災害の${depthText(p.layer,p.c)}（${LAYERS[p.layer].name}）。大雨のときは、斜面のそばから早めに離れる場所です。家から約${p.dist}m。`;
  return ''}
 function homeText(){const h=LOC.hz,rows=[];
