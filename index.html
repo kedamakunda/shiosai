@@ -1,30 +1,30 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>潮騒の街で、きみと</title>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=0.12" charset="utf-8">
-<!-- 多ファイル版（2026-10-29）：海ルートを近所の人視点で書き直し。編集は scenario/ 以下と characters.js、style.css で行う -->
+<link rel="stylesheet" href="style.css?v=0.12u" charset="utf-8">
+<!-- 大学生・引っ越してくる版（college ブランチ）：主人公が新入生として引っ越してきて、地元の先輩6人が手伝う。編集は scenario/ 以下と characters.js、style.css で行う -->
 
 <div id="app">
 <div id="bg" class="town"></div><div id="hud" hidden><b id="hr"></b><button id="rs">最初から</button></div><div id="sp"></div>
 <div id="ch"></div><div id="box" hidden><span id="nm"></span><div id="tx"></div><span id="nx">タップで次へ</span></div>
-<div id="ti" class="scr"><h1>潮騒の街で、<br>きみと</h1><p>あなたが暮らす街に、お試しで暮らしに来た人たち。3日間の案内を通して、気持ちが少しずつ近づいていく物語。<br>暮らしの中で、いざという時の備えも自然に身につく。<br><small>（仮タイトル／プロトタイプ）</small><small id="ver" style="display:block;margin-top:4px"></small></p><label for="in">あなたの名前</label><input id="in" maxlength="8" placeholder="ハル"><button class="btn" id="go">はじめる</button><button class="btn" id="lg" style="background:var(--go)">自分の街で遊ぶ（住所から）</button></div>
+<div id="ti" class="scr"><h1>潮騒の街で、<br>きみと</h1><p>春から大学生。知り合いのいない街に、引っ越してきた。手伝ってくれた先輩たちと過ごす3日間で、新しい街が、少しずつ自分の街になっていく物語。<br>暮らしの中で、いざという時の備えも自然に身につく。<br><small>（仮タイトル／プロトタイプ・大学生 引っ越してくる版）</small><small id="ver" style="display:block;margin-top:4px"></small></p><label for="in">あなたの名前</label><input id="in" maxlength="8" placeholder="ハル"><button class="btn" id="go">はじめる</button><button class="btn" id="lg" style="background:var(--go)">自分の街で遊ぶ（住所から）</button></div>
 <div id="loc" class="scr" hidden><h2 style="margin:0 0 6px">あなたの街から始める</h2><div id="lin"><p style="line-height:1.7;margin:0 0 12px">住所（町名まで）を入れると、その場所の地形やハザードマップの情報から、物語の舞台が決まります。</p><input id="la" placeholder="例：京都市左京区下鴨" autocomplete="off"><button class="btn" id="ls" style="width:100%">この住所で調べる</button><button class="btn sub" id="lc" style="width:100%">現在地を使う</button><p class="note">住所や位置は保存しません。住所で調べるときだけ、国土地理院の住所検索に送られます。番地まで入れなくても大丈夫です。</p><button class="btn sub" id="lb" style="width:100%">もどる</button></div><div id="lmsg" class="hint" hidden></div><div id="lres" hidden></div></div>
 <div id="lr" class="scr" hidden></div>
 <div id="map" class="scr" hidden><h2 id="mt" style="margin:0"></h2><p id="mp" style="margin:4px 0"></p><div class="hint" id="hn"></div><svg id="sv" viewBox="0 0 360 400"></svg><button class="btn" id="vg" style="width:100%" disabled>3か所えらぼう</button></div>
 <div id="en" class="scr" hidden></div></div>
-<script src="characters.js?v=0.12" charset="utf-8"></script>
-<script src="version.js?v=0.12" charset="utf-8"></script>
-<script src="art.js?v=0.12" charset="utf-8"></script>
-<script src="engine.js?v=0.12" charset="utf-8"></script>
-<script src="local.js?v=0.12" charset="utf-8"></script>
-<script src="scenario/common.js?v=0.12" charset="utf-8"></script>
-<script src="scenario/wataru.js?v=0.12" charset="utf-8"></script>
-<script src="scenario/ao.js?v=0.12" charset="utf-8"></script>
-<script src="scenario/yama1.js?v=0.12" charset="utf-8"></script>
-<script src="scenario/yama2.js?v=0.12" charset="utf-8"></script>
-<script src="scenario/machi1.js?v=0.12" charset="utf-8"></script>
-<script src="scenario/machi2.js?v=0.12" charset="utf-8"></script>
-<!-- 新しいルートを作ったら、ここに <script src="scenario/○○.js?v=0.12" charset="utf-8"></script> を足す。
+<script src="characters.js?v=0.12u" charset="utf-8"></script>
+<script src="version.js?v=0.12u" charset="utf-8"></script>
+<script src="art.js?v=0.12u" charset="utf-8"></script>
+<script src="engine.js?v=0.12u" charset="utf-8"></script>
+<script src="local.js?v=0.12u" charset="utf-8"></script>
+<script src="scenario/common.js?v=0.12u" charset="utf-8"></script>
+<script src="scenario/wataru.js?v=0.12u" charset="utf-8"></script>
+<script src="scenario/ao.js?v=0.12u" charset="utf-8"></script>
+<script src="scenario/yama1.js?v=0.12u" charset="utf-8"></script>
+<script src="scenario/yama2.js?v=0.12u" charset="utf-8"></script>
+<script src="scenario/machi1.js?v=0.12u" charset="utf-8"></script>
+<script src="scenario/machi2.js?v=0.12u" charset="utf-8"></script>
+<!-- 新しいルートを作ったら、ここに <script src="scenario/○○.js?v=0.12u" charset="utf-8"></script> を足す。
      ?v= はブラウザに古いファイルを使わせないための印。バージョンを上げたら全部まとめて書き換える -->
 <script>start()</script>
 

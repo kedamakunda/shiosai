@@ -110,7 +110,7 @@ function showLocResult(){lmsg('');$('#lin').hidden=true;
  <p style="line-height:1.7;margin:8px 0">この街は、物語では「<b>${REGION_NAME[LOC.region]}</b>」として始まります。<br>くわしい地図は、エンディングのあとで一緒に見られます。</p>
  <button class="btn" id="lgo" style="width:100%">この街で始める</button><button class="btn sub" id="lalt" style="width:100%">物語の街は、自分で選ぶ</button><button class="btn sub" id="lre" style="width:100%">場所を入れなおす</button>`;
  $('#lres').hidden=false;
- $('#lgo').onclick=()=>{$('#loc').hidden=true;begin($('#in').value.trim());st.region=LOC.region;play([...S.intro.slice(0,2),L('town','','{n}','私の街は、'+LOC.town+'のあたり。'),...S[LOC.region+'_intro']])};
+ $('#lgo').onclick=()=>{$('#loc').hidden=true;begin($('#in').value.trim());st.region=LOC.region;play([...S.intro.slice(0,2),L('town','','{n}',S.localLine?S.localLine(LOC.town):'私の街は、'+LOC.town+'のあたり。'),...S[LOC.region+'_intro']])};
  $('#lalt').onclick=()=>{$('#loc').hidden=true;begin($('#in').value.trim());play(S.intro)};
  $('#lre').onclick=openLoc}
 $('#lg').onclick=openLoc;
