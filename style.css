@@ -61,3 +61,6 @@ button:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2
 .legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px}
 .lg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
 .card.home{border:2px solid var(--go)}
+/* 仮の立ち絵（art.js） */
+.c.art::before,.c.art::after{display:none}
+.c.art svg{width:100%;height:100%;display:block}

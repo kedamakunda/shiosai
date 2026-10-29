@@ -51,6 +51,7 @@ index.html          画面の枠と、読み込むファイルの一覧
 style.css           見た目（背景・吹き出し・ボタンなど）
 characters.js       キャラ設定（名前・色・地域・エンドのしきい値・防災メモ）
 version.js          バージョン番号（更新のたびに書き換え、CHANGELOG.md と揃える）
+art.js              仮の立ち絵（SVG）と表情
 engine.js           進行・分岐・好感度・エンド判定（ふだんは触らなくてOK）
 local.js            自分の街で遊ぶモード（住所→ハザード読み取り→地域決定、エンディング後の地図）
 scenario/common.js  共通パート（名前入力 → 街を選ぶ → 地域ごとの導入）
@@ -61,9 +62,15 @@ scenario/*.js       各キャラのルート
 
 **セリフを直す**：`scenario/` の該当ファイルを開いて、`L('背景','立ち絵','話す人','セリフ')` の4つ目を書き換えます。`{n}` は主人公の名前に置き換わります。
 
-**キャラの設定を変える**：`characters.js` を編集します。`img:'画像のパス'` を足すと、シルエットが立ち絵画像に替わります。
+**キャラの設定を変える**：`characters.js` を編集します。
 
-**バージョンを上げたら**：`version.js` と `CHANGELOG.md` に加えて、`index.html` の `?v=0.9` もまとめて新しい番号に書き換えます（ブラウザに古いファイルが残るのを防ぐため）。
+**立ち絵と表情**：今は `art.js` が仮の立ち絵をSVGで描いています（髪型・服は `art.js` の `LOOK`、色は `characters.js` の `hair` / `coat`）。
+
+- セリフに `{f:'smile'}` を付けると、話している人の表情が変わります。表情は `normal`（ふつう）・`smile`（笑顔）・`shy`（照れ）・`trouble`（困り顔）。例：`L('town','k','航','いいですね。',{f:'smile'})`
+- 本番の画像に差し替えるときは、`characters.js` のキャラに `img` を足します。1枚なら `img:'img/wataru.png'`、表情ごとなら `img:{normal:'img/wataru.png',smile:'img/wataru_smile.png',shy:'img/wataru_shy.png',trouble:'img/wataru_trouble.png'}`。足りない表情は `normal` の画像が使われます。
+- 画像は縦長（横170：縦300くらい）、背景を透明にしたPNGが合います。
+
+**バージョンを上げたら**：`version.js` と `CHANGELOG.md` に加えて、`index.html` の `?v=0.10` もまとめて新しい番号に書き換えます（ブラウザに古いファイルが残るのを防ぐため）。
 
 **新しいルートを足す**：
 

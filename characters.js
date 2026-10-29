@@ -3,7 +3,7 @@
 // sym   : セリフ中で立ち絵を指定する1文字（L('town','kr',…) の 'k' や 'r'）
 // start : ルート最初のシーンID / end : エンドIDの接頭辞（○H=ハッピー ○N=ノーマル ○B=ビター）
 // th    : [ハッピー以上, ノーマル以上]（それ未満はビター） / max : 好感度の表示上限
-// img   : 立ち絵画像のパス（省略するとシルエット） / memo : そのルート固有の防災メモ
+// img   : 立ち絵画像のパス。省略すると art.js の仮の絵。表情ごとに分けるときは img:{normal:'img/wataru.png',smile:'img/wataru_smile.png',shy:'…',trouble:'…'} / memo : そのルート固有の防災メモ
 // area / age / traits / bosai : 設定メモ（動作には使わない）。bosai=暮らしの中に自然に出てくる防災要素
 const CHARS={
 wataru:{region:'sea',sym:'k',name:'航',full:'鳴海 航',blurb:'海沿いを歩いたり、街を眺めるのが好き',hair:'#1b1b22',coat:'#3d5a80',color:'#3d5a80',ready:true,start:'wa',end:'wend',th:[6,3],max:8,

@@ -4,7 +4,7 @@ const $=s=>document.querySelector(s);
 const S={},MAPS={},MEMO=[];                           // S:シーン集 / MAPS:地図ミニゲーム / MEMO:共通の防災メモ
 const st={name:'',who:null,aff:{},log:[],flags:{}};   // aff:キャラ別の好感度 / log:増減の記録 / flags:フラグ
 const L=(bg,c,sp,t,x)=>Object.assign({bg,c,sp,t},x); // セリフ1行
-const BY={};Object.values(CHARS).forEach(c=>BY[c.sym]=c);
+const BY={};Object.entries(CHARS).forEach(([id,c])=>{c.id=id;BY[c.sym]=c});
 let steps=[],i=0,sel=new Set(),curMap=null;
 const T=s=>s.replace(/\{n\}/g,st.name);
 const hide=()=>['#ti','#map','#en','#loc','#lr'].forEach(s=>{const e=$(s);if(e)e.hidden=true});
@@ -18,12 +18,15 @@ const hh=(h,w)=>typeof h=='number'?add(h,w):Object.entries(h).forEach(([k,v])=>a
 const nameColor=sp=>{if(sp=='{n}')return '#c04a62';const c=Object.values(CHARS).find(c=>c.name==sp);return c?c.color:'#fff3'};
 const pickList=r=>Object.entries(CHARS).filter(([id,c])=>!r||r===1||c.region===r).map(([id,c])=>[c.full+(c.blurb?'　'+c.blurb:'')+(c.ready?'':'（準備中）'),c.ready?()=>startRoute(id):null]);
 function startRoute(id){st.who=id;hearts();play(S[CHARS[id].start])}
+// 立ち絵：characters.js の img が文字列なら全表情共通、{normal:'…',smile:'…'} なら表情ごと。img がなければ art.js の仮の絵
+const pic=(c,f)=>!c.img?null:typeof c.img=='string'?c.img:(c.img[f]||c.img.normal||null);
 function play(a){steps=a;i=0;draw()}
 function go(t){const r=typeof t=='function'?t(st):t;if(typeof r=='string')play(S[r]);else if(Array.isArray(r))play(r)}
 
 function draw(){const s=steps[i];if(s.h)hh(s.h,s.why);if(s.set)Object.assign(st.flags,s.set);
  $('#bg').className=s.bg;$('#sp').className=s.c.length>1?'two':'';
- $('#sp').innerHTML=[...s.c].map(k=>{const c=BY[k];return c?`<div class="c ${c.name==s.sp||s.sp=='？？'?'on':''} ${c.img?'img':''}" style="--hair:${c.hair};--coat:${c.coat};${c.img?`background-image:url(${c.img})`:''}"></div>`:''}).join('');
+ $('#sp').innerHTML=[...s.c].map(k=>{const c=BY[k];if(!c)return '';const on=c.name==s.sp||(s.sp=='？？'&&s.c.length==1),f=on&&s.f||'normal',im=pic(c,f);
+  return `<div class="c ${on||s.sp=='？？'?'on':''} ${im?'img':''} ${!im&&typeof artSVG=='function'?'art':''}" style="--hair:${c.hair};--coat:${c.coat};${im?`background-image:url(${im})`:''}">${!im&&typeof artSVG=='function'?artSVG(c.id,f):''}</div>`}).join('');
  const n=$('#nm');n.textContent=T(s.sp);n.hidden=!s.sp;n.style.background=nameColor(s.sp);
  $('#tx').textContent=T(s.t);$('#box').hidden=false;
  const list=s.pick?pickList(s.pick):s.ch,ch=$('#ch');ch.innerHTML='';$('#nx').hidden=!!list;
