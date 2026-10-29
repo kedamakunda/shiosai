@@ -7,7 +7,7 @@ const L=(bg,c,sp,t,x)=>Object.assign({bg,c,sp,t},x); // セリフ1行
 const BY={};Object.values(CHARS).forEach(c=>BY[c.sym]=c);
 let steps=[],i=0,sel=new Set(),curMap=null;
 const T=s=>s.replace(/\{n\}/g,st.name);
-const hide=()=>['#ti','#map','#en'].forEach(s=>$(s).hidden=true);
+const hide=()=>['#ti','#map','#en','#loc','#lr'].forEach(s=>{const e=$(s);if(e)e.hidden=true});
 const ICON={sign:p=>`<g class="sp" data-id="${p.id}"><rect x="${p.x-22}" y="${p.y-22}" width="44" height="44" rx="8" fill="#1c9a69" stroke="#fff" stroke-width="2"/><path d="M${p.x-11} ${p.y+6}l11-17 11 17z" fill="#fff"/><path d="M${p.x-15} ${p.y+14}q4-4 7.5 0t7.5 0 7.5 0 7.5 0" stroke="#fff" stroke-width="2.5" fill="none"/></g>`};
 
 function hearts(){const c=CHARS[st.who];if(!c){$('#hr').textContent='';return}

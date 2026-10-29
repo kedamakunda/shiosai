@@ -35,7 +35,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2
 #ti{display:flex;flex-direction:column;justify-content:center;gap:16px;background:linear-gradient(#1b4a68,#10283c 70%)}
 #ti h1{font-size:34px;line-height:1.3;margin:0}
 #ti p{margin:0;opacity:.8;font-size:14px;line-height:1.7}
-#ti input{font:inherit;font-size:18px;padding:12px 14px;border-radius:12px;border:2px solid var(--sea);background:#0d2132;color:var(--sand)}
+#ti input,#loc input{font:inherit;font-size:18px;padding:12px 14px;border-radius:12px;border:2px solid var(--sea);background:#0d2132;color:var(--sand)}
 #map svg{width:100%;max-height:60vh;border-radius:16px;display:block;margin:10px 0}
 #map .sp{cursor:pointer}
 #map .sp circle{fill:#fff;stroke:#6b8896;stroke-width:2}
@@ -49,3 +49,15 @@ button:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2
 /* 立ち絵画像を指定したキャラ（characters.js の img）はシルエットを消して画像表示 */
 .c.img{background-repeat:no-repeat;background-position:center bottom;background-size:contain}
 .c.img::before,.c.img::after{display:none}
+/* 自分の街で遊ぶ（local.js） */
+#loc{display:flex;flex-direction:column;gap:10px}#lin,#lres{display:flex;flex-direction:column;gap:10px}
+#loc input{width:100%;box-sizing:border-box}
+.btn.sub{background:#fff2;color:var(--sand);box-shadow:none}
+.note{font-size:12.5px;opacity:.75;line-height:1.7;margin:0}
+.hint.err{border-left-color:#f0a46a}
+#lr svg{width:100%;max-height:60vh;border-radius:16px;display:block;margin:10px 0}
+#lr text,#map .hm text{font-family:inherit;fill:var(--ink);font-weight:700}
+#lr a{color:#7fe0b4}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px}
+.lg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.card.home{border:2px solid var(--go)}
